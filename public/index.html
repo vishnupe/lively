@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>V I S H N U P E</title>
+  <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700&amp;subset=cyrillic" rel="stylesheet">
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      height: 100vh;
+      transition: all 0.5s ease;
+    }
+
+    .editor-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    textarea {
+      margin: 0;
+      padding: 6px;
+      border: none;
+      width: 30%;
+      height: 100vh;
+      max-height: 100vh;
+      outline: none;
+      transition: all 0.5s ease;
+      background: #1e1e1e;
+      color: #b5cea8;
+      font-family: 'Anonymous Pro', monospace;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #body {
+      flex-grow: 1;
+      height: 100vh;
+      max-height: 100vh;
+      padding: 6px;
+    }
+  </style>
+  <style id="css" type="text/css"></style>
+</head>
+
+<body>
+  <div class="editor-container">
+    <textarea disabled id="markup-content"></textarea>
+    <div id="body"></div>
+    <textarea disabled id="style-content"></textarea>
+  </div>
+  <script type="text/javascript">
+    let css = document.getElementById('css');
+    let body = document.getElementById('body');
+
+    function updateCSS(styleText) {
+      css.appendChild(document.createTextNode(styleText));
+
+    }
+    function updateBody(markUpText) {
+      body.appendChild(document.createRange().createContextualFragment(markUpText));
+    }
+
+    function typeit(textarea, text, onTypeEnd) {
+      return new Promise((resolve) => {
+        let index = 0;
+        let next_letter = function () {
+          if (index < text.length) {
+            textarea.value += text[index++];
+            setTimeout(next_letter, 50);
+          } else {
+            onTypeEnd(text);
+            resolve();
+          }
+        }
+        next_letter();
+      });
+    }
+
+    async function main() {
+      let style = document.getElementById('style-content');
+      let markup = document.getElementById('markup-content');
+
+      let snippets = [
+        {
+          html: `
+<h1>HelloWorld!</h1>
+`,
+          css: `
+h1 {
+  font-size: 28px;
+  color: red;
+  font-family: 'Arimo'
+}
+`
+        },
+      {
+        html: `
+<h2>Welcome!</h2>
+`,
+        css: `
+h2 {
+  font-size: 22px;
+  color: blue;
+  font-family: 'Arimo';
+  float: right;
+}
+`
+      }];
+      
+      for (i=0; i < snippets.length; ++i) {
+        await typeit(markup, snippets[i].html, updateBody);
+        await typeit(style, snippets[i].css, updateCSS);
+      }
+    };
+    main();
+  </script>
+</body>
+
+</html>
