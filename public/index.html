@@ -21,6 +21,10 @@
       padding-bottom: 2vh;
       padding-left: 2vw;
       padding-right: 2vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .editor-container {
@@ -69,10 +73,22 @@
       padding: 0px;
       overflow-y: hidden;
     }
+
     #body {
       width: 100%;
       height: 100%;
       overflow-y: auto;
+    }
+
+    #stop-btn {
+      color: black;
+    }
+    .hide {
+      width: 0%;
+      height: 0%;
+      padding: 0;
+      overflow: hidden;
+      resize: none;
     }
   </style>
   <style id="css" type="text/css"></style>
@@ -87,10 +103,20 @@
     </div>
     <textarea disabled id="style-content"></textarea>
   </div>
+  <a id="stop-btn" href="javascript:closeit();">skip</a>
+
   <script type="text/javascript">
     let css = document.getElementById('css');
     let body = document.getElementById('body');
     let script = document.getElementById('script');
+    let stopped = false;
+    var closeit = function () {
+      document.getElementById('stop-btn').style.display = 'none'
+      document.getElementById('style-content').className = 'hide';
+      document.getElementById('markup-content').className = 'hide';
+      document.getElementById('html').style.maxWidth = '100%';
+      stopped = true;
+    }
 
     function updateCSS(styleText) {
       css.appendChild(document.createTextNode(styleText));
@@ -108,7 +134,11 @@
         let next_letter = function () {
           if (index < text.length) {
             textarea.value += text[index++];
-            setTimeout(next_letter, 40);
+            if(stopped) {
+              next_letter();
+            }else {
+              setTimeout(next_letter, 40);              
+            }
           } else {
             onTypeEnd(text);
             resolve();
@@ -126,7 +156,7 @@
         {
           html: ``,
           css: `
-/* Let say something.. */
+/* Say things here.. */
 #body {
   background:#ECEFF1;
 }
@@ -136,26 +166,25 @@
           html: `
 <!-- Say things here... -->
 
-<h1 id="hello">HelloWorld!</h1>
+<h2>Hey,</h2>
 `,
           css: `
-/* Let say something.. */
-h1 {
-  font-size: 28px;
-  color: red;
-  font-family: 'Arimo'
+h2 {
+  font-size: 20px;
+  color: black;
+  font-family: 'Anonymous Pro'
 }
 `
         },
         {
           html: `
-<h2>Welcome!</h2>
+<h1>Lets build something amazing together!</h1>
 `,
           css: `
-h2 {
-  font-size: 22px;
-  color: blue;
-  font-family: 'Arimo';
+h1 {
+  font-size: 28px;
+  color: rgba(255,82,82,0.87);
+  font-family: 'Anonymous Pro';
 }
 `
         }];
