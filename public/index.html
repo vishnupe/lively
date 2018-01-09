@@ -3,6 +3,7 @@
 
 <head>
   <title>S P A C E</title>
+  <link href="prism.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700&amp;subset=cyrillic" rel="stylesheet">
   <style type="text/css">
@@ -36,7 +37,8 @@
       align-items: center;
     }
 
-    textarea {
+    .textarea {
+      white-space: pre-wrap;
       margin: 0;
       padding: 6px;
       border: none;
@@ -83,6 +85,12 @@
     #stop-btn {
       color: black;
     }
+
+    #editor {
+      width: 200px;
+      height: 200px;
+    }
+
     .hide {
       width: 0%;
       height: 0%;
@@ -90,25 +98,42 @@
       overflow: hidden;
       resize: none;
     }
+    /** prism styles **/
+
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+      color: #569cd6;
+    }
   </style>
   <style id="css" type="text/css"></style>
   <script id="script" type="text/javascript"></script>
+  <script src="prism.js" data-manual></script>
 </head>
 
 <body>
   <div class="editor-container">
-    <textarea disabled id="markup-content"></textarea>
+    <pre data-start class="textarea" disabled id="markup-content"></pre>
     <div id="html">
       <div id="body"></div>
     </div>
-    <textarea disabled id="style-content"></textarea>
+    <pre class="textarea" disabled id="style-content"></pre>
   </div>
+
   <a id="stop-btn" href="javascript:closeit();">skip</a>
 
   <script type="text/javascript">
     let css = document.getElementById('css');
     let body = document.getElementById('body');
     let script = document.getElementById('script');
+
+    let style = document.getElementById('style-content');
+    let markup = document.getElementById('markup-content');
+
     let stopped = false;
     var closeit = function () {
       document.getElementById('stop-btn').style.display = 'none'
@@ -118,29 +143,36 @@
       stopped = true;
     }
 
-    function updateCSS(styleText) {
+    function updateCSS(styleText, hText) {
+      style.innerHTML = '';
+      style.appendChild(document.createRange().createContextualFragment(hText));
       css.appendChild(document.createTextNode(styleText));
     }
-    function updateBody(markUpText) {
+    function updateBody(markUpText, hText) {
+      markup.innerHTML = '';
+      markup.appendChild(document.createRange().createContextualFragment(hText));
       body.appendChild(document.createRange().createContextualFragment(markUpText));
     }
     function updateScript(scriptText) {
       script.appendChild(document.createTextNode(scriptText));
     }
 
-    function typeit(textarea, text, onTypeEnd) {
+    function typeit(textarea, text, onTypeEnd, type) {
       return new Promise((resolve) => {
         let index = 0;
+        let hText = textarea.innerHTML + 
+        '<code>' + Prism.highlight(text, Prism.languages[type]) + '</code>';
+        console.log(hText)
         let next_letter = function () {
           if (index < text.length) {
-            textarea.value += text[index++];
-            if(stopped) {
+            textarea.innerHTML += text[index++];
+            if (stopped) {
               next_letter();
-            }else {
-              setTimeout(next_letter, 40);              
+            } else {
+              setTimeout(next_letter, 40);
             }
           } else {
-            onTypeEnd(text);
+            onTypeEnd(text, hText);
             resolve();
           }
         }
@@ -149,19 +181,16 @@
     }
 
     async function main() {
-      let style = document.getElementById('style-content');
-      let markup = document.getElementById('markup-content');
-
       let snippets = [
-        {
-          html: ``,
-          css: `
-/* Say things here.. */
-#body {
-  background:#ECEFF1;
-}
-`
-        },
+//         {
+//           html: ``,
+//           css: `
+// /* Say things here.. */
+// #body {
+//   background:#ECEFF1;
+// }
+// `
+//         },
         {
           html: `
 <!-- Say things here... -->
@@ -190,8 +219,8 @@ h1 {
         }];
 
       for (i = 0; i < snippets.length; ++i) {
-        await typeit(markup, snippets[i].html, updateBody);
-        await typeit(style, snippets[i].css, updateCSS);
+        await typeit(markup, snippets[i].html, updateBody, 'markup');
+        await typeit(style, snippets[i].css, updateCSS, 'css');
       }
     };
     main();
