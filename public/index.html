@@ -132,7 +132,7 @@
     }
 
     #editor2>.tab {
-      margin-left: 27%;
+      margin-left: 25%;
     }
 
     .hidden>.textarea {
@@ -194,7 +194,8 @@
     </div>
     <div id="html">
       <div class="html-tab">
-        <img id="stop-btn" class="fullscreen-icon" onclick="closeit();" src="fullscreen.png" />
+        <img id="previewmode-btn" class="fullscreen-icon" onclick="previewMode();" src="fullscreen.png" />
+        <img id="editormode-btn" style="display:none" class="fullscreen-icon" onclick="editorMode();" src="fullscreen_exit.png" />        
       </div>
       <div id="body"></div>
     </div>
@@ -207,26 +208,48 @@
     let style = document.getElementById('style-content');
     let markup = document.getElementById('markup-content');
 
+    let previewContainer = document.getElementById('html');
+    let editorContainer = document.getElementsByClassName('editor-container')[0];
+    let previewModeButton = document.getElementById('previewmode-btn');
+    let editorModeButton = document.getElementById('editormode-btn');
+
+    let editor1 = document.getElementById('editor1');
+    let editor2 = document.getElementById('editor2');
+
     let stopped = false;
-    var closeit = function () {
-      document.getElementById('stop-btn').style.display = 'none'
-      document.getElementsByClassName('editor-container')[0].style.opacity = '0';
-      document.getElementsByClassName('editor-container')[0].style.minWidth = '0';
-      document.getElementsByClassName('editor-container')[0].children[0].style.display = 'none';
-      document.getElementsByClassName('editor-container')[0].children[1].style.display = 'none';
-      document.getElementsByClassName('editor-container')[0].style.width = '0';
-      document.getElementById('html').style.maxWidth = '100%';
+
+    function previewMode () {
+      previewModeButton.style.display = 'none'
+      editorModeButton.style.display = 'block'
+      editorContainer.style.opacity = '0';
+      editorContainer.style.minWidth = '0';
+      editorContainer.children[0].style.display = 'none';
+      editorContainer.children[1].style.display = 'none';
+      editorContainer.style.width = '0';
+      previewContainer.style.maxWidth = '100%';
       stopped = true;
     }
+
+    function editorMode() {
+      editorModeButton.style.display = 'none'
+      previewModeButton.style.display = 'block'
+      editorContainer.style.opacity = '1';
+      editorContainer.style.minWidth = '50%';
+      editorContainer.children[0].style.display = 'flex';
+      editorContainer.children[1].style.display = 'flex';
+      editorContainer.style.width = '50%';
+      previewContainer.style.maxWidth = '50%';
+    }
+
     function selectTab(tab) {
       switch (tab) {
         case 1:
-          document.getElementById('editor1').className = 'editor-item';
-          document.getElementById('editor2').className = 'editor-item hidden';
+          editor1.className = 'editor-item';
+          editor2.className = 'editor-item hidden';
           break;
         case 2:
-          document.getElementById('editor1').className = 'editor-item hidden';
-          document.getElementById('editor2').className = 'editor-item';
+          editor1.className = 'editor-item hidden';
+          editor2.className = 'editor-item';
           break;
       }
     }
