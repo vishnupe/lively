@@ -230,15 +230,16 @@
       stopped = true;
     }
 
-    function editorMode() {
+    function editorMode() {      
       editorModeButton.style.display = 'none'
       previewModeButton.style.display = 'block'
+      previewContainer.style.width = '50%';
+      // previewContainer.style.maxWidth = '50%';
       editorContainer.style.opacity = '1';
       editorContainer.style.minWidth = '50%';
       editorContainer.children[0].style.display = 'flex';
       editorContainer.children[1].style.display = 'flex';
       editorContainer.style.width = '50%';
-      previewContainer.style.maxWidth = '50%';
     }
 
     function selectTab(tab) {
