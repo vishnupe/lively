@@ -3,6 +3,9 @@
 
 <head>
   <title>S P A C E</title>
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-firestore.js"></script>
   <link href="prism.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700&amp;subset=cyrillic" rel="stylesheet">
@@ -19,7 +22,7 @@
     }
     /* optional: show position indicator in red */
 
-    ::-webkit-scrollbar-thumb {
+     ::-webkit-scrollbar-thumb {
       background: #FF0000;
     }
 
@@ -87,6 +90,8 @@
       height: 3vh;
       padding: 1vh;
       min-height: 18px;
+      display: flex;
+      flex-direction: row;
     }
 
     .textarea {
@@ -158,6 +163,21 @@
       cursor: pointer;
       height: 3vh;
       min-height: 18px;
+      margin-left: 30px;
+    }
+
+    .social-icon {
+      cursor: pointer;
+      height: 3vh;
+      min-height: 18px;
+      margin-right: 4px;
+    }
+
+    .icon-github {
+      background: white;
+      cursor: pointer;
+      height: 3vh;
+      min-height: 18px;
     }
     /** prism styles **/
 
@@ -182,7 +202,6 @@
     <div class="tab">mysite.html</div>
     <div class="tab">mysite.css</div>
   </div>-->
-  <a href="https://github.com/vishnupe" style="z-index:3;position: absolute;top: 90vh;left: 62px;transform: rotate(45deg);" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
   <div class="container">
     <div class="editor-container">
       <div id="editor2" class="editor-item hidden">
@@ -196,13 +215,22 @@
     </div>
     <div id="html">
       <div class="html-tab">
+        <a href="https://github.com/vishnupe"><img class="social-icon" src="github.png" /></a>
+        <a href="https://www.facebook.com/vishnu.govnd"><img class="social-icon" src="fb.png" /></a>
         <img id="previewmode-btn" class="fullscreen-icon" onclick="previewMode();" src="fullscreen.png" />
-        <img id="editormode-btn" style="display:none" class="fullscreen-icon" onclick="editorMode();" src="fullscreen_exit.png" />        
+        <img id="editormode-btn" style="display:none" class="fullscreen-icon" onclick="editorMode();" src="fullscreen_exit.png" />
       </div>
       <div id="body"></div>
     </div>
   </div>
   <script type="text/javascript">
+    firebase.initializeApp({
+      apiKey: 'AIzaSyDK36iEjodECD9eQ_EfqjiLVvleknD1Z9I',
+      authDomain: 'hostingtest-c2618.firebaseapp.com',
+      projectId: 'hostingtest-c2618'
+    });
+    var db = firebase.firestore();
+
     let css = document.getElementById('css');
     let body = document.getElementById('body');
     let script = document.getElementById('script');
@@ -220,7 +248,7 @@
 
     let stopped = false;
 
-    function previewMode () {
+    function previewMode() {
       previewModeButton.style.display = 'none'
       editorModeButton.style.display = 'block'
       editorContainer.style.opacity = '0';
@@ -232,7 +260,7 @@
       stopped = true;
     }
 
-    function editorMode() {      
+    function editorMode() {
       editorModeButton.style.display = 'none'
       previewModeButton.style.display = 'block'
       previewContainer.style.width = '50%';
@@ -292,69 +320,75 @@
     }
 
     async function main() {
-      let snippets = [
-        {
-          html:
-          ``,
-          css:
-          `
-/* Say things here.. */
-#body {
-  background:#0080ff;
-}
-`
-        },
+      let snippets = [];
+      //       let snippets = [
+      //         {
+      //           html:
+      //           ``,
+      //           css:
+      //           `
+      // /* Say things here.. */
+      // #body {
+      //   background:#0080ff;
+      // }
+      // `
+      //         },
 
-        {
-          html:
-          `
-<!-- Say things here... -->
-<h1>Hello</h1>
-`,
-          css:
-          `
-h1 {
-  font-size: 12vw;
-  color: white;
-  font-family: 'Anonymous Pro';
-  text-align: center;
-  height: 2vw;
-}
-`
-        },
+      //         {
+      //           html:
+      //           `
+      // <!-- Say things here... -->
+      // <h1>Hello</h1>
+      // `,
+      //           css:
+      //           `
+      // h1 {
+      //   font-size: 12vw;
+      //   color: white;
+      //   font-family: 'Anonymous Pro';
+      //   text-align: center;
+      //   height: 2vw;
+      // }
+      // `
+      //         },
 
-        {
-          html:
-          `
-<h4>I'm a dummy.</h4>
-`,
-          css:
-          `
-h4 {
-  font-size: 3vw;
-  color: white;
-  font-family: 'Anonymous Pro';
-  text-align: center;
-}
-`
-        },
+      //         {
+      //           html:
+      //           `
+      // <h4>I'm a dummy.</h4>
+      // `,
+      //           css:
+      //           `
+      // h4 {
+      //   font-size: 3vw;
+      //   color: white;
+      //   font-family: 'Anonymous Pro';
+      //   text-align: center;
+      // }
+      // `
+      //         },
 
-        {
-          html:
-          `
-<p>More dummy content to follow. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-`,
-          css:
-          `
-p {
-  font-size: 1vw;
-  color: white;
-  font-family: 'Anonymous Pro';
-  text-align: center;
-}
-`
-        }];
-
+      //         {
+      //           html:
+      //           `
+      // <p>More dummy content to follow. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      // `,
+      //           css:
+      //           `
+      // p {
+      //   font-size: 1vw;
+      //   color: white;
+      //   font-family: 'Anonymous Pro';
+      //   text-align: center;
+      // }
+      // `
+      //         }];
+      await db.collection("snippets").orderBy("created").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+          snippets.push(doc.data())
+        });
+      });
       for (i = 0; i < snippets.length; ++i) {
         await typeit(markup, snippets[i].html, updateBody, 'markup');
         if (!stopped) {
